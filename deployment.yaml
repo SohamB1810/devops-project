@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: devops-app
+  template:
+    metadata:
+      labels:
+        app: devops-app
+    spec:
+      containers:
+      - name: devops-app
+        image: soham1810/test-image:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: APP_ENV
+          valueFrom:
+            secretKeyRef:
+              name: devops-app-secret
+              key: APP_ENV
+        - name: APP_PORT
+          valueFrom:
+            secretKeyRef:
+              name: devops-app-secret
+              key: APP_PORT
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: devops-app-config
+              key: LOG_LEVEL
+        - name: APP_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: devops-app-config
+              key: APP_NAME
+        - name: VERSION
+          valueFrom:
+            configMapKeyRef:
+              name: devops-app-config
+              key: VERSION
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
