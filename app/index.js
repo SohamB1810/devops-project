@@ -1,17 +1,19 @@
-const express = require('express');
+const express = require("express");
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
+// Serve static files
+app.use(express.static("public"));
 
-let tasks = [];
-
-app.get('/tasks', (req, res) => res.json(tasks));
-
-app.post('/tasks', (req, res) => {
-  tasks.push(req.body);
-  res.status(201).json(req.body);
+// Fallback root route
+app.get("/", (req, res) => {
+  res.send("DevOps App Running 🚀");
 });
 
-app.get('/health', (req, res) => res.send("OK"));
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
 
-app.listen(3000, () => console.log("Running on port 3000"));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
