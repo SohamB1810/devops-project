@@ -60,3 +60,10 @@ jobs:
 
     - name: Verify Deployment
       run: kubectl get pods -l app=devops-app
+	- name: Install Trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+
+      - name: Scan Docker image with Trivy
+        run: |
+          trivy image --exit-code 0 --severity HIGH,CRITICAL --format table soham1810/test-image:latest
